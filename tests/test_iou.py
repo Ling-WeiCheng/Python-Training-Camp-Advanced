@@ -1,4 +1,8 @@
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from exercises.iou import calculate_iou
+
 
 def test_cases():
     # 测试样例1：完全重叠的情况

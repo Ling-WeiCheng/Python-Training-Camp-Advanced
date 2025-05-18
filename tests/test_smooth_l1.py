@@ -1,5 +1,10 @@
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from exercises.smooth_l1 import smooth_l1
 import numpy as np
+
+# ...existing code...
 
 def test_smooth_l1():
     # sigma = 1.0 对应 beta = 1.0

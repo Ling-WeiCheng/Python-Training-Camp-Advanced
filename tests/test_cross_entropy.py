@@ -1,3 +1,6 @@
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from exercises.cross_entropy import cross_entropy_loss
 import numpy as np
 

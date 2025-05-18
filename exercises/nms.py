@@ -24,6 +24,28 @@ def calculate_iou(box1, box2):
     # 请在此处编写代码
     # (与 iou.py 中的练习相同，可以复用代码或导入)
     # 提示：计算交集面积和并集面积，然后相除。
+    # 1. 计算相交区域的坐标
+    x_left = max(box1[0], box2[0])
+    y_top = max(box1[1], box2[1])
+    x_right = min(box1[2], box2[2])
+    y_bottom = min(box1[3], box2[3])
+    
+    # 2. 计算相交区域的面积
+    intersection_width = max(0, x_right - x_left)
+    intersection_height = max(0, y_bottom - y_top)
+    intersection_area = intersection_width * intersection_height
+    
+    # 3. 计算各自的面积
+    box1_area = (box1[2] - box1[0]) * (box1[3] - box1[1])
+    box2_area = (box2[2] - box2[0]) * (box2[3] - box2[1])
+    
+    # 4. 计算并集面积
+    union_area = box1_area + box2_area - intersection_area
+    
+    # 5. 计算IoU
+    if union_area == 0:
+        return 0.0
+    return intersection_area / union_area
     pass
 
 def nms(boxes, scores, iou_threshold):
@@ -52,4 +74,50 @@ def nms(boxes, scores, iou_threshold):
     #    c. 找到 IoU 小于等于 iou_threshold 的索引 inds。
     #    d. 更新 order，只保留那些 IoU <= threshold 的框的索引 (order = order[inds + 1])。
     # 7. 返回 keep 列表。
+    
+    # 1. 处理空输入
+    if len(boxes) == 0:
+        return []
+    
+    # 2. 确保输入为numpy数组
+    boxes = np.array(boxes)
+    scores = np.array(scores)
+    
+    # 3. 计算所有框的面积
+    areas = (boxes[:, 2] - boxes[:, 0]) * (boxes[:, 3] - boxes[:, 1])
+    
+    # 4. 根据分数排序
+    order = np.argsort(scores)[::-1]
+    
+    # 5. 初始化保留列表
+    keep = []
+    
+    # 6. NMS循环
+    while order.size > 0:
+        # 保留分数最高的框
+        i = order[0]
+        keep.append(i)
+        
+        if order.size == 1:
+            break
+            
+        # 计算剩余框与当前框的IoU
+        xx1 = np.maximum(boxes[i, 0], boxes[order[1:], 0])
+        yy1 = np.maximum(boxes[i, 1], boxes[order[1:], 1])
+        xx2 = np.minimum(boxes[i, 2], boxes[order[1:], 2])
+        yy2 = np.minimum(boxes[i, 3], boxes[order[1:], 3])
+        
+        # 计算交集面积
+        w = np.maximum(0, xx2 - xx1)
+        h = np.maximum(0, yy2 - yy1)
+        intersection = w * h
+        
+        # 计算IoU
+        overlap = intersection / (areas[i] + areas[order[1:]] - intersection)
+        
+        # 找到IoU小于阈值的框
+        inds = np.where(overlap <= iou_threshold)[0]
+        order = order[inds + 1]
+    
+    return keep
     pass 

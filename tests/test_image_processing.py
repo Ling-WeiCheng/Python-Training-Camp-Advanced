@@ -2,6 +2,10 @@ import cv2
 import numpy as np
 import pytest
 import os
+import sys
+
+# 添加项目根目录到系统路径
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from exercises.image_processing import image_processing_pipeline
 
 def test_image_processing_pipeline():

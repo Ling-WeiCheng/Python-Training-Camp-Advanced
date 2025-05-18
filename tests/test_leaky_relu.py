@@ -1,5 +1,9 @@
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from exercises.leaky_relu import leaky_relu
 import numpy as np
+
 
 def test_leaky_relu():
     # 测试样例1：混合输入，默认 alpha=0.01
